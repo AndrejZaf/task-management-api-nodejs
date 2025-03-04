@@ -22,8 +22,8 @@ router.post("/", async (req, res) => {
     try {
         const createdTask = await create(req.body as Task);
         res.status(201).json(createdTask);
-    } catch (error) {
-        res.status(400).json();
+    } catch (error: any) {
+        res.status(400).json({ message: error.message });
     }
 });
 
@@ -31,8 +31,8 @@ router.put("/:id", async (req, res) => {
     try {
         const updatedTask = await updateById(req.params.id, req.body as Task);
         res.status(200).json(updatedTask);
-    } catch (error) {
-        res.status(400).json();
+    } catch (error: any) {
+        res.status(400).json({ message: error.message });
     }
 });
 

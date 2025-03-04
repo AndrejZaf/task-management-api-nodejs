@@ -14,14 +14,24 @@ export const findById = async (taskId: string) => {
 
 export const create = async (task: Task) => {
     const validatedFields = TaskSchema.safeParse(task);
-    if (!validatedFields) {
-        throw Error("Bad request");
+    if (!validatedFields.success) {
+        throw Error("Invalid body");
     }
 
     return db.insert(tasks).values(task).returning();
 };
 
 export const updateById = async (taskId: string, task: Task) => {
+    const validatedFields = TaskSchema.safeParse(task);
+    if (!validatedFields.success) {
+        throw Error("Invalid body");
+    }
+
+    const taskById = await findById(taskId);
+    if (!taskById) {
+        throw Error("Invalid task ID");
+    }
+
     return db.update(tasks).set(task).where(eq(tasks.id, taskId));
 };
 
