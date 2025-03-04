@@ -32,7 +32,7 @@ router.post("/", async (req, res) => {
 router.put("/:id", async (req, res) => {
     try {
         const updatedTask = await updateById(req.params.id, req.body as Task);
-        // await clearCacheByKey(req.originalUrl);
+        await clearCacheByKey(req.originalUrl);
         res.status(200).json(updatedTask);
     } catch (error: any) {
         res.status(400).json({ message: error.message });
