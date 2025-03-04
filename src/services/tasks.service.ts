@@ -32,7 +32,7 @@ export const updateById = async (taskId: string, task: Task) => {
         throw Error("Invalid task ID");
     }
 
-    return db.update(tasks).set(task).where(eq(tasks.id, taskId));
+    return db.update(tasks).set(task).where(eq(tasks.id, taskId)).returning();
 };
 
 export const deleteById = async (taskId: string) => {

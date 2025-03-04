@@ -1,4 +1,3 @@
-import { sql } from "drizzle-orm";
 import { pgEnum, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 
 export const taskStatus = pgEnum("task_status", ["PENDING", "IN_PROGRESS", "COMPLETED"]);
@@ -19,5 +18,5 @@ export const tasks = pgTable("task", {
     updatedAt: timestamp("updated_at")
         .notNull()
         .defaultNow()
-        .$onUpdate(() => sql`(CURRENT_TIMESTAMP)`),
+        .$onUpdate(() => new Date()),
 });

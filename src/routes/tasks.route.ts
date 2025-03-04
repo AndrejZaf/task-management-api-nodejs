@@ -1,4 +1,6 @@
 import express from "express";
+import { cacheMiddleware } from "../config/middleware";
+import { clearCacheByKey } from "../config/redis.cache";
 import { Task } from "../db/types";
 import { create, deleteById, findAll, findById, updateById } from "../services/tasks.service";
 
@@ -9,7 +11,7 @@ router.get("/", async (req, res) => {
     res.json(tasks);
 });
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", cacheMiddleware, async (req, res) => {
     const task = await findById(req.params.id);
     if (!task) {
         res.status(404).json({});
@@ -30,6 +32,7 @@ router.post("/", async (req, res) => {
 router.put("/:id", async (req, res) => {
     try {
         const updatedTask = await updateById(req.params.id, req.body as Task);
+        // await clearCacheByKey(req.originalUrl);
         res.status(200).json(updatedTask);
     } catch (error: any) {
         res.status(400).json({ message: error.message });
@@ -38,6 +41,7 @@ router.put("/:id", async (req, res) => {
 
 router.delete("/:id", async (req, res) => {
     await deleteById(req.params.id);
+    await clearCacheByKey(req.originalUrl);
     res.status(204).json();
 });
 
