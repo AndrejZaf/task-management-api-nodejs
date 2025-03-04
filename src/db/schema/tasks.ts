@@ -3,7 +3,7 @@ import { pgEnum, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 
 export const taskStatus = pgEnum("task_status", ["PENDING", "IN_PROGRESS", "COMPLETED"]);
 
-export const task = pgTable("task", {
+export const tasks = pgTable("task", {
     id: text("id")
         .primaryKey()
         .$defaultFn(() => crypto.randomUUID()),
