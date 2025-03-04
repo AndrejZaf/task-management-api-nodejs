@@ -19,3 +19,12 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./setup/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - REDIS_URL=redis://task-mgmt-redis:6379
+      - DATABASE_URL=postgres://postgres:postgres@task-mgmt-postgres:5432/task_mgmt

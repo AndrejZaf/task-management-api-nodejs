@@ -1,7 +1,7 @@
 import * as redis from "redis";
 
 export const redisClient = redis.createClient({
-    url: "redis://localhost:6379",
+    url: process.env.REDIS_URL,
     socket: {
         reconnectStrategy: (retries) => {
             if (retries > 10) return new Error("Max retries reached");
