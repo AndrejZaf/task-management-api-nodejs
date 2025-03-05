@@ -2,7 +2,7 @@
 FROM node:22.14.0-slim
 
 # Set the working directory inside the container
-WORKDIR /usr/src/app
+WORKDIR /app
 
 # Copy package.json and package-lock.json (if it exists) to the container
 COPY package*.json ./

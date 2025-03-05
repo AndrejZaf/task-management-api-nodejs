@@ -8,8 +8,6 @@ services:
     ports:
       - "6379:6379"
     environment:
-      - REDIS_PASSWORD=my-password
-      - REDIS_PORT=6379
       - REDIS_DATABASES=16
   postgres:
     container_name: task-mgmt-postgres
@@ -19,12 +17,21 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: task_mgmt
     volumes:
-      - ./setup/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+      - postgres-data:/var/lib/postgresql/data
+      - ./drizzle:/docker-entrypoint-initdb.d
   app:
     build: .
     ports:
       - "3000:3000"
     environment:
-      - REDIS_URL=redis://task-mgmt-redis:6379
-      - DATABASE_URL=postgres://postgres:postgres@task-mgmt-postgres:5432/task_mgmt
+      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=postgres://postgres:postgres@postgres:5432/task_mgmt
+    depends_on:
+      - postgres
+      - redis
+
+volumes:
+  postgres-data:
+    driver: local
