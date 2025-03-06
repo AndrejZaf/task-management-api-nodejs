@@ -2,6 +2,7 @@ import { eq } from "drizzle-orm";
 import { db } from "../db";
 import { tasks } from "../db/schema";
 import { Task } from "../db/types";
+import { INVALID_BODY, TASK_NOT_FOUND } from "../utils/error.constants";
 import { TaskSchema } from "../validations/task.validation";
 
 export const findAll = async () => {
@@ -9,13 +10,18 @@ export const findAll = async () => {
 };
 
 export const findById = async (taskId: string) => {
-    return await db.query.tasks.findFirst({ where: eq(tasks.id, taskId) });
+    const task = await db.query.tasks.findFirst({ where: eq(tasks.id, taskId) });
+    if (!task) {
+        throw Error(TASK_NOT_FOUND);
+    }
+
+    return task;
 };
 
 export const create = async (task: Task) => {
     const validatedFields = TaskSchema.safeParse(task);
     if (!validatedFields.success) {
-        throw Error("Invalid body");
+        throw Error(INVALID_BODY);
     }
 
     return db.insert(tasks).values(task).returning();
@@ -24,15 +30,14 @@ export const create = async (task: Task) => {
 export const updateById = async (taskId: string, task: Task) => {
     const validatedFields = TaskSchema.safeParse(task);
     if (!validatedFields.success) {
-        throw Error("Invalid body");
+        throw Error(INVALID_BODY);
     }
 
-    const taskById = await findById(taskId);
-    if (!taskById) {
-        throw Error("Invalid task ID");
-    }
-
-    return db.update(tasks).set(task).where(eq(tasks.id, taskId)).returning();
+    const taskFromDb = await findById(taskId);
+    taskFromDb.status = task.status;
+    taskFromDb.title = task.title;
+    taskFromDb.description = task.description;
+    return db.update(tasks).set(taskFromDb).where(eq(tasks.id, taskId)).returning();
 };
 
 export const deleteById = async (taskId: string) => {

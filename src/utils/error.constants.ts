@@ -1,0 +1,2 @@
+export const INVALID_BODY = "INVALID_BODY";
+export const TASK_NOT_FOUND = "TASK_NOT_FOUND";

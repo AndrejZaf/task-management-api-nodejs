@@ -12,8 +12,10 @@ export const cacheMiddleware = async (req: any, res: any, next: any) => {
 
     res.sendResponse = res.json;
     res.json = (body: Task) => {
-        redisClient.setEx(cacheKey, 3600, JSON.stringify(body));
-        return res.sendResponse(body); // Return the Response object
+        if (res.statusCode >= 200 && res.statusCode < 300) {
+            redisClient.setEx(cacheKey, 3600, JSON.stringify(body));
+        }
+        return res.sendResponse(body);
     };
     next();
 };
