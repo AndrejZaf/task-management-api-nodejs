@@ -37,6 +37,7 @@ export const updateById = async (taskId: string, task: Task) => {
     taskFromDb.status = task.status;
     taskFromDb.title = task.title;
     taskFromDb.description = task.description;
+    taskFromDb.updatedAt = new Date();
     return db.update(tasks).set(taskFromDb).where(eq(tasks.id, taskId)).returning();
 };
 
