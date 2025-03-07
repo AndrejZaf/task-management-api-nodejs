@@ -165,7 +165,7 @@ DELETE /tasks/:id → Delete a task
 
 <h2 id="pointsCovered">📃 Bonus Points Covered</h2>
 
-- Redis Cache - The initial fetch of is cached for 1 hour, if a task is editted or deleted the cache is invalidated.
+- Redis Cache - The initial fetch of a task by a specific ID is cached for 1 hour, if a task is editted or deleted the cache is invalidated.
 - Dockerized the application and it's dependencies (PostgreSQL and Redis)
 
 You can find the API deployed on the following URL: `159.89.3.82:3000/api/v1/tasks` 
